@@ -1,0 +1,19 @@
+<div class="bg-white shadow p-4 rounded flex justify-between">
+  <div>
+    <h2 class="text-xl font-bold"><%= post.title %></h2>
+    <p><%= post.content %></p>
+    <p class="text-sm text-gray-500">
+      <%= post.createdAt.toLocaleString() %>
+    </p>
+  </div>
+  <div class="flex gap-2 items-start">
+    <button type="button" class="bg-yellow-500 text-white px-2 py-1 rounded">
+      Edit
+    </button>
+    <form action="/delete/<%= post.id %>?_method=DELETE" method="POST">
+      <button type="submit" class="bg-red-600 text-white px-2 py-1 rounded">
+        Delete
+      </button>
+    </form>
+  </div>
+</div>
