@@ -1,13 +1,17 @@
-<div class="bg-white shadow p-4 rounded flex justify-between">
+<div
+  x-data="{ showModal: false }"
+  class="bg-white shadow p-4 rounded flex justify-between"
+>
   <div>
     <h2 class="text-xl font-bold"><%= post.title %></h2>
     <p><%= post.content %></p>
-    <p class="text-sm text-gray-500">
-      <%= post.createdAt.toLocaleString() %>
-    </p>
+    <p class="text-sm text-gray-500"><%= post.createdAt.toLocaleString() %></p>
   </div>
   <div class="flex gap-2 items-start">
-    <button type="button" class="bg-yellow-500 text-white px-2 py-1 rounded">
+    <button
+      @click="showModal = true"
+      class="bg-yellow-500 text-white px-2 py-1 rounded"
+    >
       Edit
     </button>
     <form action="/delete/<%= post.id %>?_method=DELETE" method="POST">
@@ -15,5 +19,50 @@
         Delete
       </button>
     </form>
+  </div>
+
+  <div
+    x-show="showModal"
+    x-transition
+    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+  >
+    <div class="bg-white p-6 rounded w-96 relative">
+      <h3 class="text-lg font-semibold mb-4">Edit Post</h3>
+      <button
+        @click="showModal = false"
+        class="text-gray-500 hover:text-gray-700 text-4xl font-bold absolute top-2 right-4"
+      >
+        &times;
+      </button>
+      <form
+        action="/edit/<%= post.id %>?_method=PUT"
+        method="POST"
+        class="space-y-2"
+      >
+        <input
+          type="text"
+          name="title"
+          value="<%= post.title %>"
+          class="border p-2 w-full"
+          required
+        />
+        <textarea name="content" class="border p-2 w-full" required><%= post.content %></textarea>
+        <div class="flex justify-end gap-2">
+          <button
+            type="button"
+            @click="showModal = false"
+            class="px-4 py-2 bg-gray-300 rounded"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-600 text-white rounded"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
