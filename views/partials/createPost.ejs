@@ -1,0 +1,41 @@
+<section class="mb-4 flex justify-center" x-data="{ showModal: false }">
+  <button
+    @click="showModal = true"
+    class="bg-blue-600 hover:bg-blue-700 text-white text-2xl px-4 py-2 rounded mt-10"
+  >
+    Create New Post
+  </button>
+  <div
+    x-show="showModal"
+    x-transition
+    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+  >
+    <div class="bg-white p-6 rounded w-96 relative">
+      <h3 class="text-lg font-semibold mb-4">Create Post</h3>
+      <button
+        @click="showModal = false"
+        class="text-gray-500 hover:text-gray-700 text-4xl font-bold absolute top-2 right-4"
+      >
+        &times;
+      </button>
+      <form action="/create" method="POST" class="space-y-2">
+        <input
+          type="text"
+          name="title"
+          placeholder="Title"
+          class="border p-2 w-full"
+          required
+        />
+        <textarea
+          name="content"
+          placeholder="Content"
+          class="border p-2 w-full"
+          required
+        ></textarea>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2">
+          Create Post
+        </button>
+      </form>
+    </div>
+  </div>
+</section>

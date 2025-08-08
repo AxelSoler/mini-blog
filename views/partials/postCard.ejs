@@ -10,12 +10,12 @@
   <div class="flex gap-2 items-start">
     <button
       @click="showModal = true"
-      class="bg-yellow-500 text-white px-2 py-1 rounded"
+      class="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded"
     >
       Edit
     </button>
     <form action="/delete/<%= post.id %>?_method=DELETE" method="POST">
-      <button type="submit" class="bg-red-600 text-white px-2 py-1 rounded">
+      <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded">
         Delete
       </button>
     </form>
