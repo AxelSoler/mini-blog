@@ -27,12 +27,13 @@ app.use(session({
   resave: false,
 }));
 
-app.use(setCurrentUser);
-
 app.use((req, res, next) => {
   res.locals.session = req.session;
+  res.locals.path = req.path;
   next();
 });
+
+app.use(setCurrentUser);
 
 app.use('/', authRoutes);
 app.use('/', postRoutes);

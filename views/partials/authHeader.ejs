@@ -1,0 +1,12 @@
+<header class="w-full p-4 bg-gray-100 shadow">
+  <div class="max-w-4xl mx-auto flex justify-between items-center">
+    <a href="/" class="text-xl font-bold">MiniBlog</a>
+    <nav class="text-sm space-x-4">
+      <% if (path === '/login') { %>
+        <a href="/signup" class="text-blue-600 hover:underline">Sign Up</a>
+      <% } else if (path === '/signup') { %>
+        <a href="/login" class="text-blue-600 hover:underline">Log In</a>
+      <% } %>
+    </nav>
+  </div>
+</header>

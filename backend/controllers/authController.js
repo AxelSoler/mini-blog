@@ -15,7 +15,6 @@ exports.createUser = async (req, res) => {
         password: hashedPassword
       }
     });
-    req.flash('success', 'Account created successfully. Please log in.');
     res.redirect('/login');
   } catch (err) {
     console.error(err);
