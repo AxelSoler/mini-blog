@@ -4,6 +4,7 @@
 >
   <div>
     <h2 class="text-xl font-bold"><%= post.title %></h2>
+    <p class="text-sm text-gray-600">by <%= post.user.username %></p>
     <p><%= post.content %></p>
     <p class="text-sm text-gray-500"><%= post.createdAt.toLocaleString() %></p>
   </div>

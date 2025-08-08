@@ -12,6 +12,7 @@ async function setCurrentUser(req, res, next) {
   if (req.session.userId) {
     try {
       const user = await prisma.user.findUnique({ where: { id: req.session.userId } });
+      req.currentUser = user;
       res.locals.currentUser = user;
     } catch (err) {
       console.error('Error setting currentUser:', err);
