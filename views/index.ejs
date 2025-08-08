@@ -1,5 +1,9 @@
 <nav class="p-4 bg-gray-100 flex justify-between">
-  <a href="/">Home</a>
+  <% if (currentUser) { %>
+    <p>Welcome, <%= currentUser.username %></p>
+  <% } else { %>
+    <p>Welcome</p>
+  <% } %>
 
   <% if (session.userId) { %>
     <a href="/logout">Logout</a>

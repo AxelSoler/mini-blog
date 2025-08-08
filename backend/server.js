@@ -3,11 +3,13 @@ const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
 const session = require('express-session');
 const methodOverride = require('method-override');
+
 const authRoutes = require('./routes/authRoutes');
+const postRoutes = require('./routes/postRoutes');
+
+const { setCurrentUser } = require('./helpers');
 
 require('dotenv').config();
-
-const postRoutes = require('./routes/postRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,6 +26,8 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'supersecretkey',
   resave: false,
 }));
+
+app.use(setCurrentUser);
 
 app.use((req, res, next) => {
   res.locals.session = req.session;
