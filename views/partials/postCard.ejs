@@ -1,5 +1,5 @@
 <div
-  x-data="{ showModal: false }"
+  x-data="{ showEditModal: false, showDeleteModal: false }"
   class="bg-white shadow p-4 rounded flex justify-between"
 >
   <div>
@@ -7,34 +7,37 @@
     <p><%= post.content %></p>
     <p class="text-sm text-gray-500"><%= post.createdAt.toLocaleString() %></p>
   </div>
+
   <% if (currentUser && currentUser.id === post.userId) { %>
     <div class="flex gap-2 items-start">
+      <!-- Edit Button -->
       <button
-        @click="showModal = true"
+        @click="showEditModal = true"
         class="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded"
       >
         Edit
       </button>
-      <form action="/delete/<%= post.id %>?_method=DELETE" method="POST">
-        <button
-          type="submit"
-          class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded"
-        >
-          Delete
-        </button>
-      </form>
+
+      <!-- Delete Button -->
+      <button
+        @click="showDeleteModal = true"
+        class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded"
+      >
+        Delete
+      </button>
     </div>
   <% } %>
 
+  <!-- Edit Modal -->
   <div
-    x-show="showModal"
+    x-show="showEditModal"
     x-transition
     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
   >
     <div class="bg-white p-6 rounded w-96 relative">
       <h3 class="text-lg font-semibold mb-4">Edit Post</h3>
       <button
-        @click="showModal = false"
+        @click="showEditModal = false"
         class="text-gray-500 hover:text-gray-700 text-4xl font-bold absolute top-2 right-4"
       >
         &times;
@@ -55,7 +58,7 @@
         <div class="flex justify-end gap-2">
           <button
             type="button"
-            @click="showModal = false"
+            @click="showEditModal = false"
             class="px-4 py-2 bg-gray-300 rounded"
           >
             Cancel
@@ -70,4 +73,42 @@
       </form>
     </div>
   </div>
+
+  <!-- Delete Modal -->
+  <div
+    x-show="showDeleteModal"
+    x-transition
+    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+  >
+    <div class="bg-white p-6 rounded w-96 relative">
+      <h3 class="text-lg font-semibold mb-4">Are you sure?</h3>
+      <p class="mb-4">This action will permanently delete the post.</p>
+      <button
+        @click="showDeleteModal = false"
+        class="text-gray-500 hover:text-gray-700 text-4xl font-bold absolute top-2 right-4"
+      >
+        &times;
+      </button>
+      <form
+        action="/delete/<%= post.id %>?_method=DELETE"
+        method="POST"
+        class="flex justify-end gap-2"
+      >
+        <button
+          type="button"
+          @click="showDeleteModal = false"
+          class="px-4 py-2 bg-gray-300 rounded"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="px-4 py-2 bg-red-600 text-white rounded"
+        >
+          Delete
+        </button>
+      </form>
+    </div>
+  </div>
 </div>
+
