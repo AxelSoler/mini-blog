@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const postController = require('../controllers/postController');
+const { requireAuth } = require('../helpers');
 
 router.get('/', postController.getAllPosts);
-router.post('/create', postController.createPost);
-router.put('/edit/:id', postController.editPost);
-router.delete('/delete/:id', postController.deletePost);
+router.post('/create', requireAuth, postController.createPost);
+router.put('/edit/:id', requireAuth, postController.editPost);
+router.delete('/delete/:id', requireAuth, postController.deletePost);
 
 module.exports = router;

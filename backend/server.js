@@ -3,6 +3,8 @@ const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
 const session = require('express-session');
 const methodOverride = require('method-override');
+const authRoutes = require('./routes/authRoutes');
+
 require('dotenv').config();
 
 const postRoutes = require('./routes/postRoutes');
@@ -19,11 +21,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 app.use(session({
-  secret: 'supersecretkey',
+  secret: process.env.SESSION_SECRET || 'supersecretkey',
   resave: false,
-  saveUninitialized: true
 }));
 
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
+
+app.use('/', authRoutes);
 app.use('/', postRoutes);
 
 app.listen(PORT, () => {
