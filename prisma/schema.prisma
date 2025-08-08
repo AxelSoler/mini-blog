@@ -18,6 +18,10 @@ model Post {
   title     String
   content   String
   createdAt DateTime @default(now())
+
+  // Foreign key
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model User {
@@ -27,4 +31,7 @@ model User {
   email    String @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // One-to-many relation
+  posts     Post[]
 }
