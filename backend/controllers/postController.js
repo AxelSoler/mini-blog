@@ -37,6 +37,27 @@ exports.getAllPosts = async (req, res) => {
   });
 };
 
+exports.getPostById = async (req, res) => {
+  const { id } = req.params;
+
+  const post = await prisma.post.findUnique({
+    where: { id: parseInt(id) },
+    include: {
+      user: { select: { username: true } },
+      comments: {
+        orderBy: { createdAt: 'desc' },
+        include: { user: { select: { username: true } } }
+      }
+    }
+  });
+
+  if (!post) {
+    return res.status(404).send('Post not found');
+  }
+
+  res.render('post', { post, currentUser: req.currentUser });
+};
+
 
 exports.createPost = async (req, res) => {
   const { title, content } = req.body;

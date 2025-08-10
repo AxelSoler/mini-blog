@@ -2,8 +2,8 @@
   x-data="{ showEditModal: false, showDeleteModal: false }"
   class="bg-white shadow p-4 rounded"
 >
-  <div class="flex justify-between border-b pb-2 mb-2 gap-2">
-    <a href="/posts/<%= post.id %>" class="block hover:bg-gray-100 p-2 rounded w-full">
+  <div class="flex justify-between border-b pb-2 mb-2">
+    <div href="/posts/<%= post.id %>" class="block hover:bg-gray-100 p-2 rounded">
       <h2 class="text-xl font-bold"><%= post.title %></h2>
       <p class="text-sm text-gray-600">by <%= post.user.username %> on <%= post.createdAt.toLocaleString() %></p>
       <div 
@@ -44,7 +44,7 @@
           Show less
         </button>
       </div>
-    </a>
+    </div>
     <% if (currentUser && currentUser.id === post.userId) { %>
       <div class="flex gap-2 items-start">
         <!-- Edit Button -->
@@ -171,4 +171,3 @@
     </div>
   </div>
 </div>
-
