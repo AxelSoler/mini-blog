@@ -9,6 +9,15 @@ exports.getAllPosts = async (req, res) => {
         select: {
           username: true
         }
+      },
+      comments: {
+        take: 3,
+        orderBy: { createdAt: 'desc' }, // Get the latest 3 comments
+        include: {
+          user: {
+            select: { username: true }
+          }
+        }
       }
     }
   });
@@ -27,6 +36,7 @@ exports.getAllPosts = async (req, res) => {
     maxPosts: 3
   });
 };
+
 
 exports.createPost = async (req, res) => {
   const { title, content } = req.body;

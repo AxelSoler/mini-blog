@@ -18,6 +18,7 @@ model Post {
   title     String
   content   String
   createdAt DateTime @default(now())
+  comments  Comment[]
 
   // Foreign key
   userId    Int
@@ -34,4 +35,19 @@ model User {
 
   // One-to-many relation
   posts     Post[]
+  comments  Comment[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id])
+
+  @@unique([userId, postId]) // clave única para un comentario por usuario y post
 }

@@ -7,6 +7,7 @@ const methodOverride = require('method-override');
 
 const authRoutes = require('./routes/authRoutes');
 const postRoutes = require('./routes/postRoutes');
+const commentRoutes = require('./routes/commentRoutes');
 
 const { setCurrentUser } = require('./helpers');
 
@@ -47,6 +48,7 @@ app.use(setCurrentUser);
 
 app.use('/', authRoutes);
 app.use('/', postRoutes);
+app.use('/', commentRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

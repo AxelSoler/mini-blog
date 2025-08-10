@@ -1,71 +1,92 @@
 <div
   x-data="{ showEditModal: false, showDeleteModal: false }"
-  class="bg-white shadow p-4 rounded flex justify-between"
+  class="bg-white shadow p-4 rounded"
 >
-  <div>
-    <h2 class="text-xl font-bold"><%= post.title %></h2>
-    <p class="text-sm text-gray-600">by <%= post.user.username %></p>
-    <div 
-      x-data="{ 
-        expanded: false, 
-        showButton: false,
-        checkOverflow($el) {
-          this.$nextTick(() => {
-            const p = $el.querySelector('p');
-            if (p.scrollHeight > p.clientHeight) {
-              this.showButton = true;
-            }
-          });
-        }
-      }" 
-      x-init="checkOverflow($el)"
-      class="flex flex-col"
-    >
-      <p :class="expanded ? '' : 'line-clamp-3'">
-        <%= post.content %>
-      </p>
-
-      <button
-        x-show="!expanded && showButton"
-        x-cloak
-        @click="expanded = true"
-        class="text-blue-600 hover:underline ml-auto"
+  <div class="flex justify-between border-b pb-2 mb-2">
+    <div>
+      <h2 class="text-xl font-bold"><%= post.title %></h2>
+      <p class="text-sm text-gray-600">by <%= post.user.username %> on <%= post.createdAt.toLocaleString() %></p>
+      <div 
+        x-data="{ 
+          expanded: false, 
+          showButton: false,
+          checkOverflow($el) {
+            this.$nextTick(() => {
+              const p = $el.querySelector('p');
+              if (p.scrollHeight > p.clientHeight) {
+                this.showButton = true;
+              }
+            });
+          }
+        }" 
+        x-init="checkOverflow($el)"
+        class="flex flex-col"
       >
-        Load more
-      </button>
+        <p :class="expanded ? '' : 'line-clamp-3'">
+          <%= post.content %>
+        </p>
 
-      <button
-        x-show="expanded && showButton"
-        x-cloak
-        @click="expanded = false"
-        class="text-blue-600 hover:underline ml-auto"
-      >
-        Show less
-      </button>
+        <button
+          x-show="!expanded && showButton"
+          x-cloak
+          @click="expanded = true"
+          class="text-blue-600 hover:underline ml-auto"
+        >
+          Load more
+        </button>
+
+        <button
+          x-show="expanded && showButton"
+          x-cloak
+          @click="expanded = false"
+          class="text-blue-600 hover:underline ml-auto"
+        >
+          Show less
+        </button>
+      </div>
     </div>
+    <% if (currentUser && currentUser.id === post.userId) { %>
+      <div class="flex gap-2 items-start">
+        <!-- Edit Button -->
+        <button
+          @click="showEditModal = true"
+          class="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded"
+        >
+          Edit
+        </button>
 
-    <p class="text-sm text-gray-500"><%= post.createdAt.toLocaleString() %></p>
+        <!-- Delete Button -->
+        <button
+          @click="showDeleteModal = true"
+          class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded"
+        >
+          Delete
+        </button>
+      </div>
+    <% } %>
   </div>
 
-  <% if (currentUser && currentUser.id === post.userId) { %>
-    <div class="flex gap-2 items-start">
-      <!-- Edit Button -->
-      <button
-        @click="showEditModal = true"
-        class="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded"
-      >
-        Edit
-      </button>
-
-      <!-- Delete Button -->
-      <button
-        @click="showDeleteModal = true"
-        class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded"
-      >
-        Delete
-      </button>
-    </div>
-  <% } %>
+  <div>
+    <h3 class="font-bold">Comments</h3>
+    <ul>
+      <% post.comments.forEach(comment => { %>
+        <li><strong><%= comment.user.username %>:</strong> <%= comment.content %></li>
+      <% }) %>
+    </ul>
+  
+    <% const userComment = post.comments.find(c => c.userId === (currentUser && currentUser.id)); %>
+  
+    <% if (currentUser && !userComment) { %>
+      <form action="/posts/<%= post.id %>/comments" method="POST" class="mt-2 flex flex-col gap-2">
+        <textarea name="content" required placeholder="Write your comment here" class="border p-2 w-full rounded"></textarea>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded ml-auto">Add Comment</button>
+      </form>
+    <% } else if (!currentUser) { %>
+      <p class="text-red-600 mt-2 font-bold">Please log in to comment.</p>
+    <% } else { %>
+      <p class="text-red-600 mt-2 font-bold">You have already commented on this post.</p>
+    <% } %>
+  </div>
 
   <!-- Edit Modal -->
   <div
