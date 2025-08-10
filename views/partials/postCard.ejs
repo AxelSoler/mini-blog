@@ -33,9 +33,9 @@
   <div
     x-show="showEditModal"
     x-transition
-    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 px-4"
   >
-    <div class="bg-white p-6 rounded w-96 relative">
+    <div class="bg-white p-6 rounded w-full max-w-96 relative">
       <h3 class="text-lg font-semibold mb-4">Edit Post</h3>
       <button
         @click="showEditModal = false"
