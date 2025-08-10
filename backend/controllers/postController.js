@@ -13,7 +13,19 @@ exports.getAllPosts = async (req, res) => {
     }
   });
 
-  res.render('index', { posts });
+  let postCount = 0;
+  if (req.currentUser) {
+    postCount = await prisma.post.count({
+      where: { userId: req.currentUser.id }
+    });
+  }
+
+  res.render('index', {
+    posts,
+    currentUser: req.currentUser,
+    postCount,
+    maxPosts: 3
+  });
 };
 
 exports.createPost = async (req, res) => {
@@ -21,6 +33,14 @@ exports.createPost = async (req, res) => {
 
   if (!req.currentUser) {
     return res.status(401).send('Unauthorized');
+  }
+
+  const postCount = await prisma.post.count({
+    where: { userId: req.currentUser.id }
+  });
+
+  if (postCount >= 3) {
+    return res.status(400).send('You have reached the maximum of 3 posts.');
   }
 
   await prisma.post.create({
