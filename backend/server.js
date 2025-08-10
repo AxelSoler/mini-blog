@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
 const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
 const methodOverride = require('method-override');
 
 const authRoutes = require('./routes/authRoutes');
@@ -23,8 +24,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 app.use(session({
+  store: new pgSession({
+    conString: process.env.DATABASE_URL,
+    tableName: 'session',
+    createTableIfMissing: true
+  }),
   secret: process.env.SESSION_SECRET || 'supersecretkey',
   resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+  }
 }));
 
 app.use((req, res, next) => {
