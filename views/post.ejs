@@ -73,7 +73,14 @@
       <h3 class="font-bold">Comments</h3>
       <ul>
         <% post.comments.forEach(comment => { %>
-          <li><strong><%= comment.user.username %>:</strong> <%= comment.content %></li>
+          <li class="flex items-center gap-2">
+            <strong><%= comment.user.username %>:</strong> <%= comment.content %>
+            <% if (currentUser && comment.userId === currentUser.id) { %>
+              <form action="/posts/<%= post.id %>/comments/<%= comment.id %>?_method=DELETE" method="POST" class="inline">
+                <button type="submit" class="ml-2 text-red-600 hover:underline text-xs">Delete</button>
+              </form>
+            <% } %>
+          </li>
         <% }) %>
       </ul>
     

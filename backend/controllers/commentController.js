@@ -33,3 +33,18 @@ exports.createComment = async (req, res) => {
 
   res.redirect(`/posts/${postId}`);
 };
+
+exports.deleteComment = async (req, res) => {
+  const { id } = req.params;
+
+  const comment = await prisma.comment.findUnique({ where: { id: parseInt(id) } });
+
+  if (!comment || comment.userId !== req.currentUser?.id) {
+    return res.status(403).send('Forbidden');
+  }
+
+  await prisma.comment.delete({ where: { id: parseInt(id) } });
+
+  res.redirect(`/posts/${comment.postId}`);
+};
+
