@@ -2,47 +2,14 @@
   x-data="{ showEditModal: false, showDeleteModal: false }"
   class="bg-white shadow p-4 rounded"
 >
-  <div class="flex justify-between border-b pb-2 mb-2 gap-2">
+  <div class="flex flex-col md:flex-row justify-between border-b pb-2 mb-2 gap-2">
     <a href="/posts/<%= post.id %>" class="block hover:bg-gray-100 p-2 rounded w-full">
       <h2 class="text-xl font-bold"><%= post.title %></h2>
       <p class="text-sm text-gray-600">by <%= post.user.username %> on <%= post.createdAt.toLocaleString() %></p>
-      <div 
-        x-data="{ 
-          expanded: false, 
-          showButton: false,
-          checkOverflow($el) {
-            this.$nextTick(() => {
-              const p = $el.querySelector('p');
-              if (p.scrollHeight > p.clientHeight) {
-                this.showButton = true;
-              }
-            });
-          }
-        }" 
-        x-init="checkOverflow($el)"
-        class="flex flex-col"
-      >
-        <p :class="expanded ? '' : 'line-clamp-3'">
+      <div class="flex flex-col">
+        <p class="line-clamp-3">
           <%= post.content %>
         </p>
-
-        <button
-          x-show="!expanded && showButton"
-          x-cloak
-          @click="expanded = true"
-          class="text-blue-600 hover:underline ml-auto"
-        >
-          Load more
-        </button>
-
-        <button
-          x-show="expanded && showButton"
-          x-cloak
-          @click="expanded = false"
-          class="text-blue-600 hover:underline ml-auto"
-        >
-          Show less
-        </button>
       </div>
     </a>
     <% if (currentUser && currentUser.id === post.userId) { %>
