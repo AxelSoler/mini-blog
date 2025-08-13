@@ -19,6 +19,7 @@ model Post {
   content   String
   createdAt DateTime @default(now())
   comments  Comment[]
+  reactions Reaction[]
 
   // Foreign key
   userId    Int
@@ -36,6 +37,7 @@ model User {
   // One-to-many relation
   posts     Post[]
   comments  Comment[]
+  reactions Reaction[]
 }
 
 model Comment {
@@ -48,6 +50,28 @@ model Comment {
 
   postId    Int
   post      Post     @relation(fields: [postId], references: [id])
+  
+  reactions Reaction[]
 
   @@unique([userId, postId]) // clave única para un comentario por usuario y post
+}
+
+model Reaction {
+  id        Int      @id @default(autoincrement())
+  emoji     String
+  createdAt DateTime @default(now())
+
+  // User
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+
+  // Post or Comment
+  post      Post?    @relation(fields: [postId], references: [id])
+  postId    Int?
+
+  comment   Comment? @relation(fields: [commentId], references: [id])
+  commentId Int?
+
+  @@unique([userId, postId, emoji])
+  @@unique([userId, commentId, emoji])
 }

@@ -16,8 +16,12 @@ exports.getAllPosts = async (req, res) => {
         include: {
           user: {
             select: { username: true }
-          }
+          },
+          reactions: true // Include reactions for each comment
         }
+      },
+      reactions: {
+        include: true // Include reactions for each post
       }
     }
   });
@@ -46,7 +50,10 @@ exports.getPostById = async (req, res) => {
       user: { select: { username: true } },
       comments: {
         orderBy: { createdAt: 'desc' },
-        include: { user: { select: { username: true } } }
+        include: { user: { select: { username: true } }, reactions: true  }
+      },
+      reactions: {
+        include: true
       }
     }
   });

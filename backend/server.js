@@ -8,6 +8,7 @@ const methodOverride = require('method-override');
 const authRoutes = require('./routes/authRoutes');
 const postRoutes = require('./routes/postRoutes');
 const commentRoutes = require('./routes/commentRoutes');
+const reactionRoutes = require('./routes/reactionRoutes');
 
 const { setCurrentUser } = require('./helpers');
 
@@ -23,6 +24,10 @@ app.use(expressLayouts);
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
+
+app.use(express.json());
+
+app.use(express.urlencoded({ extended: true }));
 
 app.use(session({
   store: new pgSession({
@@ -49,6 +54,7 @@ app.use(setCurrentUser);
 app.use('/', authRoutes);
 app.use('/', postRoutes);
 app.use('/', commentRoutes);
+app.use('/', reactionRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

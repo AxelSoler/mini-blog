@@ -14,7 +14,6 @@
     </a>
     <% if (currentUser && currentUser.id === post.userId) { %>
       <div class="flex gap-2 items-start">
-        <!-- Edit Button -->
         <button
           @click="showEditModal = true"
           class="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded"
@@ -22,7 +21,6 @@
           Edit
         </button>
 
-        <!-- Delete Button -->
         <button
           @click="showDeleteModal = true"
           class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded"
@@ -33,11 +31,43 @@
     <% } %>
   </div>
 
+  <div class="flex gap-2 mt-2" data-post-id="<%= post.id %>">
+    <% const emojis = ['👍','❤️','😂','😮','🎉']; %>
+    <% emojis.forEach(e => { 
+      const count = post.reactions.filter(r => r.emoji === e).length;
+      const reacted = currentUser && post.reactions.some(r => r.emoji === e && r.userId === currentUser.id);
+    %>
+      <button 
+        class="reaction-btn text-xl <%= reacted ? 'opacity-100' : 'opacity-50' %> hover:opacity-100 transition"
+        data-type="post"
+        data-emoji="<%= e %>"
+        data-id="<%= post.id %>"
+        <%= !currentUser ? 'disabled' : '' %>
+      ><%= e %> <span class="count"><%= count || '' %></span></button>
+    <% }) %>
+  </div>
+
   <div>
     <h3 class="font-bold">Comments</h3>
     <ul>
       <% post.comments.forEach(comment => { %>
-        <li><strong><%= comment.user.username %>:</strong> <%= comment.content %></li>
+        <li>
+          <strong><%= comment.user.username %>:</strong> <%= comment.content %>
+          <div class="flex gap-1 ml-2" data-comment-id="<%= comment.id %>">
+            <% emojis.forEach(e => { 
+              const count = comment.reactions.filter(r => r.emoji === e).length;
+              const reacted = currentUser && comment.reactions.some(r => r.emoji === e && r.userId === currentUser.id);
+            %>
+              <button 
+                class="reaction-btn text-sm <%= reacted ? 'opacity-100' : 'opacity-50' %> hover:opacity-100 transition"
+                data-type="comment"
+                data-emoji="<%= e %>"
+                data-id="<%= comment.id %>"
+                <%= !currentUser ? 'disabled' : '' %>
+              ><%= e %> <span class="count"><%= count || '' %></span></button>
+            <% }) %>
+          </div>
+        </li>
       <% }) %>
     </ul>
   
@@ -58,6 +88,7 @@
   <!-- Edit Modal -->
   <div
     x-show="showEditModal"
+    x-cloak
     x-transition
     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 px-4"
   >
@@ -104,6 +135,7 @@
   <!-- Delete Modal -->
   <div
     x-show="showDeleteModal"
+    x-cloak
     x-transition
     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
   >
@@ -139,3 +171,35 @@
   </div>
 </div>
 
+<script>
+document.querySelectorAll('.reaction-btn').forEach(btn => {
+  btn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const emoji = btn.dataset.emoji;
+    const type = btn.dataset.type;
+    const id = btn.dataset.id;
+
+    const payload = { emoji };
+    if (type === 'post') payload.postId = id;
+    if (type === 'comment') payload.commentId = id;
+
+    const res = await fetch('/reactions/toggle', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (data.added || data.removed) {
+      const countSpan = btn.querySelector('.count');
+      let count = parseInt(countSpan.textContent) || 0;
+      count = data.added ? count + 1 : count - 1;
+      countSpan.textContent = count > 0 ? count : '';
+
+      btn.classList.toggle('opacity-100', data.added);
+      btn.classList.toggle('opacity-50', !data.added);
+    }
+  });
+});
+</script>
