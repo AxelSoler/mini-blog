@@ -5,10 +5,11 @@ const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const methodOverride = require('method-override');
 
-const authRoutes = require('./routes/authRoutes');
-const postRoutes = require('./routes/postRoutes');
-const commentRoutes = require('./routes/commentRoutes');
-const reactionRoutes = require('./routes/reactionRoutes');
+const authRoutes = require('./routes/auth');
+const postRoutes = require('./routes/post');
+const commentRoutes = require('./routes/comment');
+const reactionRoutes = require('./routes/reactions');
+const promptRoutes = require('./routes/prompt');
 
 const { setCurrentUser } = require('./helpers');
 
@@ -55,6 +56,7 @@ app.use('/', authRoutes);
 app.use('/', postRoutes);
 app.use('/', commentRoutes);
 app.use('/', reactionRoutes);
+app.use('/prompt', promptRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

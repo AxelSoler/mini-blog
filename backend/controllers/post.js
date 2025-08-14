@@ -65,7 +65,6 @@ exports.getPostById = async (req, res) => {
   res.render('post', { post, currentUser: req.currentUser });
 };
 
-
 exports.createPost = async (req, res) => {
   const { title, content } = req.body;
 
